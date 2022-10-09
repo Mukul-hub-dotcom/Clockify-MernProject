@@ -1,22 +1,49 @@
-import './App.css'
-import { Signup } from './components/Signup';
-import {Login} from './components/Login'
-import { Clockify } from './components/Clockify';
-import { Homepage } from './components/Feacherpage';
-import {Routes, Route} from 'react-router-dom'
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Home from "./pages/Home/index";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import "./App.css";
+
 function App() {
-  return (
-    <div className="App">
-      
-      <Routes>
-        <Route path='/' element={<Clockify/>}></Route>
-        <Route path='/login' element={<Login/>}></Route>        
-        <Route path='/signup' element={<Signup/>}></Route>
-        <Route path='/features' element={<Homepage/>} ></Route>
-        </Routes>
-    </div>
-  );
-  
+	const [user, setUser] = useState(null);
+
+	const getUser = async () => {
+		try {
+			const url = `${process.env.REACT_APP_API_URL}/auth/login/success`;
+			const { data } = await axios.get(url, { withCredentials: true });
+			setUser(data.user._json);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	useEffect(() => {
+		getUser();
+	}, []);
+
+	return (
+		<div className="container">
+			<Routes>
+				<Route
+					exact
+					path="/"
+					element={user ? <Home user={user} /> : <Navigate to="/login" />}
+				/>
+				<Route
+					exact
+					path="/login"
+					element={user ? <Navigate to="/" /> : <Login />}
+				/>
+				<Route
+					path="/signup"
+					element={user ? <Navigate to="/" /> : <Signup />}
+				/>
+			</Routes>
+		</div>
+	);
 }
 
 export default App;

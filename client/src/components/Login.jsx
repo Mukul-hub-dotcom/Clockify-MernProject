@@ -13,24 +13,31 @@ import {
   LoginSide,
   Loginnewspan,
   LoginPagePhoto,
-  Logininputdiv
+  Logininputdiv,
 } from "./Signup_style";
 import { LoginNav } from "./loginnav";
+import { Routes, Route, Navigate } from "react-router-dom";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Spinner } from "@chakra-ui/react";
 const Spindiv = styled.div`
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   justify-content: center;
-`
+`;
 const obj = {
   email: "",
   password: "",
 };
 export const Login = () => {
-  const [loding,Setloding] = React.useState(false);
+  const googleAuth = () => {
+    window.open(
+      `${process.env.REACT_APP_API_URL}/auth/google/callback`,
+      navigate("/Tracker")
+    );
+  };
+  const [loding, Setloding] = React.useState(false);
   const [box, SetChheckbox] = React.useState(true);
   const [data, setdata] = React.useState(obj);
   const navigate = useNavigate();
@@ -42,7 +49,7 @@ export const Login = () => {
     }));
   };
   const Checkuser = () => {
-    Setloding(true)
+    Setloding(true);
     fetch("https://user-data-for-react.herokuapp.com/profile")
       .then((res) => res.json())
       .then((res) => {
@@ -52,10 +59,10 @@ export const Login = () => {
         if (user) {
           alert("login sucsess");
           localStorage.setItem("userdata", JSON.stringify(user));
-          Setloding(false)
+          Setloding(false);
           navigate("/Tracker");
         } else {
-          Setloding(false)
+          Setloding(false);
           alert(
             "No user found please signup before login Or worng email or password"
           );
@@ -71,20 +78,19 @@ export const Login = () => {
       : data.password.length < 8
       ? alert("please enter right password")
       : Checkuser();
-      
-        
-      
   };
-  return (
-    loding ? <Spindiv>
-    <h1>Checking Details please wait</h1>
-    <Spinner
-  thickness='4px'
-  speed='0.65s'
-  emptyColor='gray.200'
-  color='blue.500'
-  size='xl'
-/></Spindiv> :
+  return loding ? (
+    <Spindiv>
+      <h1>Checking Details please wait</h1>
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      />
+    </Spindiv>
+  ) : (
     <LoginPhotoDive>
       <div>
         <LoginNav />
@@ -119,13 +125,20 @@ export const Login = () => {
             <hr />
             <Span>OR</Span>
           </Ordiv>
-          <Button>
+          <button onClick={googleAuth}>
+            <img
+              src="https://app.clockify.me/assets/ui-icons/icon-google.svg"
+              alt="google icon"
+            />
+            <span>Sign in with Google</span>
+          </button>
+          {/* <Button>
             <ButtonImg
               src="https://app.clockify.me/assets/ui-icons/icon-google.svg"
               alt=""
             />
             Continue with Google
-          </Button>
+          </Button> */}
         </Logininputdiv>
         <UlDive>
           <img

@@ -14,6 +14,7 @@ app.use(
 		maxAge: 24 * 60 * 60 * 100,
 	})
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -24,6 +25,10 @@ app.use(
 		credentials: true,
 	})
 );
+
+app.get("/",(req,res)=>{
+	res.json("json server start")
+})
 
 app.use("/auth", authRoute);
 
